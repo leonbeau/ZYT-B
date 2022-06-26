@@ -1,12 +1,65 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Space } from 'antd';
 import { useIntl } from 'umi';
 import './Welcome.less';
-import WelcomeSvg from '../assets/welcome.svg'
-import WelcomePanel from './WelcomePanel';
+import * as echarts from 'echarts';
+
 export default () => {
   const intl = useIntl();
+
+  const lineRef = useRef(null);
+  const myChartRef = useRef(null);
+
+  useEffect(() => {
+    initChart();
+  }, []);
+
+   /**
+     * 初始化
+     */
+    const initChart = () => {
+      myChartRef.current = echarts.init(lineRef.current);
+      let option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['微信', '微博', '头条', '抖音', '快手', '微信', '微博', '头条', '抖音', '快手'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: 'Direct',
+            type: 'bar',
+            barWidth: '60%',
+            data: [15, 18, 23, 13, 17, 15, 18, 23, 13, 17]
+          }
+        ],
+        color: ['#00a7b7'],
+      };
+      myChartRef.current && myChartRef.current.setOption(option, true);
+  }
+  
   const titleArr = ['媒体数据总成', '企业数据总览', '所有企业技术方向分布', '第三方平台账号(总览)', '集团企业分布领域', '涉及领域', '集团企业所在园区',]
   const panel1Data = [{ name: '移动端 (APP)', value: 362 }, { name: '新闻网站', value: 98 }, { name: '各大媒体号 (境内)', value: 154 }, { name: '各大平台号 (境外)', value: 11 },]
   const panel2Data = [{ name: '集团直接投资企业', value: 45 }, { name: '集团旗下基金代投企业', value: 98 }, { name: '集团各大园区入驻企业', value: 99 }, { name: '补充的集团外科技型企业', value: 246 },]
@@ -62,6 +115,12 @@ export default () => {
             </div>
           </div>
         </>
+      )
+    }
+
+    if (index === 3) {
+      return (
+        <div ref={lineRef} style={{width: '100%', height: '200px'}}></div>
       )
     }
   }
